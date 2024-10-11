@@ -1,5 +1,6 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test')
+const isDevMode = process.env.NODE_ENV === 'development'
 
 /**
  * Read environment variables from file.
@@ -25,7 +26,7 @@ module.exports = defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://localhost:8080/',
+    baseURL: isDevMode ? 'http://127.0.0.1:8080/' : 'http://127.0.0.1:5555/',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -71,8 +72,9 @@ module.exports = defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run start',
-    url: 'http://127.0.0.1:8080',
+    // command: 'npm run start',
+    command: isDevMode ? 'npm run start' : 'npm run start-prod',
+    url: isDevMode ? 'http://127.0.0.1:8080' : 'http://127.0.0.1:5555',
     reuseExistingServer: !process.env.CI,
   },
 })
