@@ -39,3 +39,15 @@ jobs:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK }} #url is set within gh repo secrets
         run: |
           curl "$deploy_url"
+
+  release-versioning:
+    if: ${{ github.event_name == 'push' }}
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Bump version and push tag
+        # Only run this step if the branch merged is main
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
